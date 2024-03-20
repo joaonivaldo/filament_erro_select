@@ -152,6 +152,23 @@ class SubsubpastaResource extends Resource
 								->preload()
 								->live()
 								->columnSpanFull(),
+
+							/*Select::make('parent.parent_id')
+								->required()
+								->label('Sub pasta principal')
+								->relationship(
+									'parent',
+									'label',
+									modifyQueryUsing: fn(Builder $query) => $query->whereNotNull('parent_id')
+								)
+								->searchable()
+								->placeholder('Selecione uma pasta.')
+								->loadingMessage('Carregando. Aguarde...')
+								->noSearchResultsMessage('Sem registros...')
+								->searchPrompt('Selecione uma pasta.')
+								->searchingMessage('Procurando...')
+								->preload()
+								->columnSpanFull(),*/
 						])->relationship('subpasta'),
 						/*Select::make('subpasta.parent_id')
 							->required()
@@ -177,7 +194,7 @@ class SubsubpastaResource extends Resource
 							->label('Sub pasta principal')
 							//->relationship(titleAttribute: 'label')
 							->options(function (Get $get) {
-								return Categoria::query()->where('parent_id', $get('parent_id'))->pluck('label', 'id');
+								return Categoria::query()->where('parent_id', $get('subpasta.parent_id'))->pluck('label', 'id');
 							})
 							->searchable()
 							->placeholder('Selecione uma pasta.')
