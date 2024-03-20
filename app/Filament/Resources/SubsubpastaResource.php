@@ -134,7 +134,26 @@ class SubsubpastaResource extends Resource
 					'2xl'     => 2,*/
 				])->schema([
 					Forms\Components\Grid::make(['default' => 1])->schema([
-						Select::make('subpasta.parent_id')
+						Forms\Components\Group::make([
+							Select::make('parent_id')
+								->required()
+								->label(fn(Model $record): string => 'Pasta Principal..: ' . $record->parent->label)
+								->relationship(
+									'parent',
+									'label',
+									modifyQueryUsing: fn(Builder $query) => $query->whereNull('parent_id')
+								)
+								->searchable()
+								->placeholder('Selecione uma pasta.')
+								->loadingMessage('Carregando. Aguarde...')
+								->noSearchResultsMessage('Sem registros...')
+								->searchPrompt('Selecione uma pasta.')
+								->searchingMessage('Procurando...')
+								->preload()
+								->live()
+								->columnSpanFull(),
+						])->relationship('subpasta'),
+						/*Select::make('subpasta.parent_id')
 							->required()
 							->label(fn(Model $record): string => 'Pasta Principal: ' . $record->subpasta->parent_id)
 							->relationship(
@@ -151,14 +170,14 @@ class SubsubpastaResource extends Resource
 							->searchingMessage('Procurando...')
 							->preload()
 							->live()
-							->columnSpanFull(),
+							->columnSpanFull(),*/
 
-						Select::make('parent_id')
+						Select::make('parent_i0d')
 							->required()
 							->label('Sub pasta principal')
 							//->relationship(titleAttribute: 'label')
 							->options(function (Get $get) {
-								return Categoria::query()->where('parent_id', $get('subpasta.parent.id'))->pluck('label', 'id');
+								return Categoria::query()->where('parent_id', $get('parent_id'))->pluck('label', 'id');
 							})
 							->searchable()
 							->placeholder('Selecione uma pasta.')
